@@ -3,7 +3,8 @@
 #include <iostream>
 #include <cstring>
 #include <map>
-
+#include <vector>
+#include "Item.h"
 using namespace std;
 
 class Room {
@@ -13,8 +14,11 @@ class Room {
   void printExits();
   void printDescription();
   Room* getExit(char* direction);
+  void addItem(Item* newItem);
+  void printItems();
  protected:
   char* description;
+  vector<Item*> roomItems; 
   map<char*, Room*> exits;
 };
 

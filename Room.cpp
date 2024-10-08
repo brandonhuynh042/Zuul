@@ -2,6 +2,7 @@
 #include <cstring>
 #include <map>
 #include "Room.h"
+#include "Item.h"
 
 using namespace std;
 
@@ -31,4 +32,14 @@ void Room::printExits() {
     cout << it->first << " ";
   }
   cout << '\n';
+}
+
+void Room::addItem(Item* newItem) {
+  roomItems.push_back(newItem);
+}
+void Room::printItems() {
+   for (vector<Item*>:: iterator it = roomItems.begin(); it != roomItems.end(); ++it) {
+     (*it)->print();
+   }
+   cout << '\n';
 }

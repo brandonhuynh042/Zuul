@@ -2,7 +2,6 @@
 #include <cstring>
 #include <map>
 #include "Room.h"
-
 using namespace std;
 
 int main() {
@@ -20,7 +19,14 @@ int main() {
   char AHall4D[60] = "You enter a long hall... there's some classes further down!";
   char AHall5D[60] = "You travel further down the hall...";
   char AHall6D[60]= "You reach the end of the hall!";
-
+  char GymD[60] = "You enter the gym... the lights are off.";
+  char ChemD[60] = "You're in the chemistry lab. Have you found the test tubes?";
+  char BathroomD[60]= "You enter the bathroom... why...";
+  char MathD[60] = "You enter a math class...";
+  char HistoryD[60] = "You enter a history class... is that Napoleon?";
+  char AuditoriumD[60] = "You enter the auditorium... the lights are off.";
+  char StorageD[60] = "You enter the storage room... I wonder what's in here!";
+  
   Room* EClassroom = new Room (EClassroomD);
   Room* Courtyard = new Room (CourtyardD);
   Room* Cafeteria = new Room (CafeteriaD);
@@ -30,7 +36,25 @@ int main() {
   Room* AHall4 = new Room (AHall4D);
   Room* AHall5 = new Room (AHall5D);
   Room* AHall6 = new Room (AHall6D);
+  Room* Gym = new Room(GymD);
+  Room* Chem = new Room(ChemD);
+  Room* Bathroom = new Room(BathroomD);
+  Room* Math = new Room(MathD);
+  Room* History = new Room(HistoryD);
+  Room* Auditorium = new Room(AuditoriumD);
+  Room* Storage = new Room(StorageD);
+
   EClassroom->setExit(east, Courtyard);
+  EClassroom->setExit(north, Gym);
+  History->setExit(south, Math);
+  History->setExit(east, Auditorium);
+  Bathroom->setExit(east, Math);
+  Bathroom->setExit(south, Chem);
+  Chem->setExit(north, Bathroom);
+  Chem->setExit(south, Gym);
+  Gym->setExit(south, EClassroom);
+  Gym->setExit(north, Bathroom);
+  Storage->setExit(west, AHall5);
   Courtyard->setExit(north, AHall4);
   Courtyard->setExit(east, Cafeteria);
   Courtyard->setExit(south, AHall3);
@@ -45,14 +69,20 @@ int main() {
   AHall4->setExit(north, AHall5);
   AHall5->setExit(south, AHall4);
   AHall5->setExit(north, AHall6);
+  AHall5->setExit(east, Storage);
   AHall6->setExit(south, AHall5);
+  AHall6->setExit(north, Auditorium);
+  AHall6->setExit(west, Math);
+  Math->setExit(west, Bathroom);
+  Math->setExit(north, History);
+  Math->setExit(east, AHall6);
   
   Room* currentRoom = EClassroom;
   bool quit = false;
   cout << "Welcome to Zuul!" << endl;
-  while (quit != true) {
+  cout << "You can: MOVE QUIT" << endl;
+  while (quit != true) { 
     currentRoom->printDescription();
-    cout << "You can: MOVE QUIT" << endl;
     cout << "The exits are: " << endl;
     currentRoom->printExits();
     char input[10];
@@ -71,6 +101,13 @@ int main() {
     }
     else if (strcmp(input, "QUIT") == 0) {
        quit = true;
+    }
+    else if (strcmp(input, "HELP") == 0) {
+      cout << "You can: MOVE QUIT" << endl;
+    }
+    else {
+      cout << "Not quite sure what you meant..." << endl;
+      cout << "Type \'HELP\' to see valid commands..." << endl;
     }
   }
   return 0;
