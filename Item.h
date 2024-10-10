@@ -9,7 +9,7 @@ class Item {
  public:
   Item(char* newName);
   Item* getItem();
-  void print();
+  char* getName();
  protected:
   char* name;
 };

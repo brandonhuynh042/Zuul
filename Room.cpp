@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <map>
+#include <vector>
 #include "Room.h"
 #include "Item.h"
 
@@ -39,7 +40,30 @@ void Room::addItem(Item* newItem) {
 }
 void Room::printItems() {
    for (vector<Item*>:: iterator it = roomItems.begin(); it != roomItems.end(); ++it) {
-     (*it)->print();
+     cout << (*it)->getName() << " ";
    }
-   cout << '\n';
+}
+
+int Room::getItemAmount() {
+  return roomItems.size();
+}
+
+bool Room::hasItem(char* itemName) {
+  for (vector<Item*>:: iterator it = roomItems.begin(); it != roomItems.end(); ++it) {
+    if (strcmp(itemName, (*it)->getName()) == 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+Item* Room::getItem(char* itemName) {
+   for (vector<Item*>:: iterator it = roomItems.begin(); it != roomItems.end(); ++it) {
+    if (strcmp(itemName, (*it)->getName()) == 0) {
+      Item* returnItem = *it;
+      roomItems.erase(it);
+      return returnItem;
+    }
+  }
+  return nullptr;
 }

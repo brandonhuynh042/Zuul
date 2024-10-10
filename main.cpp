@@ -1,9 +1,14 @@
 #include <iostream>
 #include <cstring>
 #include <map>
+#include <vector>
 #include "Room.h"
+#include "Item.h"
 using namespace std;
 
+bool playerHasItem(char* newItem, vector<Item*> playerInventory);
+Item* getPlayerItem(char* newItem, vector<Item*> &playerInventory);
+void printInventory (vector<Item*> playerInventory);
 int main() {
   char north[] = "NORTH";
   char south[] = "SOUTH";
@@ -43,7 +48,9 @@ int main() {
   Room* History = new Room(HistoryD);
   Room* Auditorium = new Room(AuditoriumD);
   Room* Storage = new Room(StorageD);
-
+  char bananaDescription[60] = "Banana";
+  Item* Banana = new Item(bananaDescription);
+  EClassroom->addItem(Banana);
   EClassroom->setExit(east, Courtyard);
   EClassroom->setExit(north, Gym);
   History->setExit(south, Math);
@@ -76,15 +83,22 @@ int main() {
   Math->setExit(west, Bathroom);
   Math->setExit(north, History);
   Math->setExit(east, AHall6);
+
+  vector<Item*> playerInventory;
   
   Room* currentRoom = EClassroom;
   bool quit = false;
   cout << "Welcome to Zuul!" << endl;
-  cout << "You can: MOVE QUIT" << endl;
+  cout << "You can: MOVE QUIT DROP GRAB" << endl;
   while (quit != true) { 
     currentRoom->printDescription();
     cout << "The exits are: " << endl;
     currentRoom->printExits();
+    if (currentRoom->getItemAmount() != 0) {
+    cout << "There is a ";
+    currentRoom->printItems();
+    cout << "here" << endl;
+    }
     char input[10];
     cin >> input;
     if (strcmp(input, "MOVE") == 0) {
@@ -99,6 +113,43 @@ int main() {
 	 currentRoom = currentRoom->getExit(directionInput);
        }
     }
+    else if (strcmp(input, "GRAB") == 0) {
+      if (currentRoom->getItemAmount() == 0) {
+	cout << "There are no items in the room..." << endl;
+      }
+      else {
+	cout << "What item would you like to grab?" << endl;
+	cout << "There is a: ";
+	currentRoom->printItems();
+	cout << '\n';
+	char itemInput[50];
+	cin.ignore(64, '\n');
+	cin.get(itemInput, 50);
+	if (currentRoom->hasItem(itemInput) == true) {
+	  playerInventory.push_back(currentRoom->getItem(itemInput));
+	}
+	else {
+	  cout << "That item isn't here..." << endl;
+	}
+      }
+    }
+    else if (strcmp(input, "DROP") == 0) {
+      if (playerInventory.size() == 0) {
+	cout << "You don't have anything to drop..." << endl;
+      }
+      else {
+	cout << "What item would you like to drop?" << endl;
+	cout << "You have: ";
+	printInventory(playerInventory);
+	cout << '\n';
+	char itemInput[50];
+	cin.ignore(64, '\n');
+	cin.get(itemInput, 50);
+	if (playerHasItem(itemInput, playerInventory) == true) {
+	  currentRoom->addItem(getPlayerItem(itemInput, playerInventory));
+	}
+      }
+    }
     else if (strcmp(input, "QUIT") == 0) {
        quit = true;
     }
@@ -111,4 +162,30 @@ int main() {
     }
   }
   return 0;
+}
+
+bool playerHasItem(char* newItem, vector<Item*> playerInventory) {
+  for (vector<Item*>:: iterator it = playerInventory.begin(); it != playerInventory.end(); ++it) {
+       if (strcmp(newItem, (*it)->getName()) == 0) {
+	 return true;
+       }
+   }
+  return false;
+}
+
+Item* getPlayerItem(char* newItem, vector<Item*> &playerInventory ) {
+  for (vector<Item*>:: iterator it = playerInventory.begin(); it != playerInventory.end(); ++it) {
+       if (strcmp(newItem, (*it)->getName()) == 0) {
+          Item* returnItem = *it;
+	  playerInventory.erase(it);
+	  return returnItem;
+       }
+   }
+  return nullptr;
+}
+
+void printInventory(vector<Item*> playerInventory) {
+    for (vector<Item*>:: iterator it = playerInventory.begin(); it != playerInventory.end(); ++it) {
+     cout << (*it)->getName() << " ";
+   }
 }

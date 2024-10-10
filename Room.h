@@ -16,6 +16,9 @@ class Room {
   Room* getExit(char* direction);
   void addItem(Item* newItem);
   void printItems();
+  int getItemAmount();
+  bool hasItem(char* itemName);
+  Item* getItem(char* itemName);
  protected:
   char* description;
   vector<Item*> roomItems; 

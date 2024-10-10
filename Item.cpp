@@ -3,6 +3,7 @@
 #include "Item.h"
 
 Item::Item(char* newName) {
+  name = new char[60];
   strcpy(name, newName);
 }
 
@@ -10,6 +11,6 @@ Item* Item::getItem() {
   return this;
 }
 
-void Item::print() {
-  cout << name << " ";
+char* Item::getName() {
+  return name;
 }
